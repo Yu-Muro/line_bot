@@ -19,8 +19,6 @@ try:
 except:
     profile = "blocked_user"
 
-status = ""
-
 
 ## 1 ##
 #Webhookからのリクエストをチェックします。
@@ -53,22 +51,24 @@ def callback():
 #reply_messageの第一引数のevent.reply_tokenは、イベントの応答に用いるトークンです。 
 #第二引数には、linebot.modelsに定義されている返信用のTextSendMessageオブジェクトを渡しています。
 
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    if "追加" in event.message.text:
-        status = "追加"
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text = "何を追加しますか？"))
-    elif "削除" in event.message.text:
-        status = "削除"
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text = "何を削除しますか？"))
-    elif "呼び出し" == event.message.text:
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text = status))
+class LineBot:
+    status = ""
+    @handler.add(MessageEvent, message=TextMessage)
+    def handle_message(event, self):
+        if "追加" in event.message.text:
+            self.status = "追加"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text = "何を追加しますか？"))
+        elif "削除" in event.message.text:
+            self.status = "削除"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text = "何を削除しますか？"))
+        elif "呼び出し" == event.message.text:
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text = self.status))
 
 # ポート番号の設定
 if __name__ == "__main__":
