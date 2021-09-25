@@ -53,6 +53,10 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = "何を追加しますか？"))
+    if "削除" in event.message.text:
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="何を削除しますか？"))
 
 # ポート番号の設定
 if __name__ == "__main__":
