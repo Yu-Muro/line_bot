@@ -15,6 +15,8 @@ YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 
+status = ""
+
 
 ## 1 ##
 #Webhookからのリクエストをチェックします。
@@ -50,13 +52,16 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     if "追加" in event.message.text:
+        status = "追加"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = "何を追加しますか？"))
     if "削除" in event.message.text:
+        status = "削除"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text="何を削除しますか？"))
+    
 
 # ポート番号の設定
 if __name__ == "__main__":
