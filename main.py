@@ -14,6 +14,10 @@ YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
 
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
+try:
+    profile = line_bot_api.get_profile("<user_id>")
+except:
+    profile = "blocked_user"
 
 status = ""
 
@@ -56,12 +60,15 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = "何を追加しますか？"))
-    if "削除" in event.message.text:
+    elif "削除" in event.message.text:
         status = "削除"
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="何を削除しますか？"))
-    
+            TextSendMessage(text = "何を削除しますか？"))
+    elif "呼び出し" == event.message.text:
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text = status))
 
 # ポート番号の設定
 if __name__ == "__main__":
