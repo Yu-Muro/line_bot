@@ -2,6 +2,7 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from flask-SQLAlchemy import SQLAlchemy
 import os
 
 
@@ -18,6 +19,17 @@ try:
     profile = line_bot_api.get_profile("<user_id>")
 except:
     profile = "blocked_user"
+
+#PostgreSQLとの接続用
+db_uri = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+db = SQLAlchemy(app)
+
+class User(db.model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True, auto_increment=True)
+    user = db.Column(db.String())
+    status = db.Column(db.String())
 
 
 ## 1 ##
@@ -64,6 +76,10 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = "何を削除しますか？"))
+    elif event.message.text == "呼び出し":
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text = User.query.all()))
 
 # ポート番号の設定
 if __name__ == "__main__":
