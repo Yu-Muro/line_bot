@@ -2,7 +2,7 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from flask-SQLAlchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 import os
 
 
