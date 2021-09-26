@@ -30,7 +30,7 @@ class User(db.model):
     id = db.Column(db.Integer, primary_key=True, auto_increment=True)
     user = db.Column(db.String())
     status = db.Column(db.String())
-
+db.create_all()
 
 ## 1 ##
 #Webhookからのリクエストをチェックします。
