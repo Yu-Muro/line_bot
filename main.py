@@ -21,7 +21,7 @@ except:
     profile = "blocked_user"
 
 #PostgreSQLとの接続用
-db_uri = os.environ.get('DATABASE_URL')
+db_uri = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
 
