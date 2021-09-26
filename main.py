@@ -25,11 +25,14 @@ db_uri = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
 
-class User(db.model):
+class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, auto_increment=True)
     user = db.Column(db.String())
     status = db.Column(db.String())
+    def __init__(self, user, status):
+        self.user = user
+        self.status = status
 db.create_all()
 
 ## 1 ##
