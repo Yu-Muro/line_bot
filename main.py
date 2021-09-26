@@ -33,7 +33,6 @@ class User(db.Model):
     def __init__(self, user, status):
         self.user = user
         self.status = status
-db.create_all()
 
 ## 1 ##
 #Webhookからのリクエストをチェックします。
