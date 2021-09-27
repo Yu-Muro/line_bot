@@ -25,9 +25,6 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user = Column(String(120))
     status = Column(String(10))
-    def __init__(self, user, status):
-        self.user = user
-        self.status = status
 
 
 #PostgreSQLとの接続用
@@ -90,8 +87,8 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text = "登録ありがとうございます！\n user_id = {}".format(profile.user_id[:5]))
         )
-        user = User(profile.use_id, "登録")
-        session.add(user)
+        user_data = User(user = profile.use_id, status = "登録")
+        session.add(user_data)
         session.commit()
 
 """
