@@ -1,8 +1,11 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, FollowEvent
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy_session import flask_scoped_session
 import os
 
 
@@ -24,6 +27,9 @@ if db_uri.startswith("postgres://"):
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
+engine = create_engine(db_uri)
+session_factory = sessionmaker(bind = engine)
+session = flask_scoped_session(session_factory, app)
 
 
 class User(db.Model):
@@ -83,10 +89,9 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text = "登録ありがとうございます！\n user_id = {}".format(profile.user_id[:5]))
         )
-        
         user = User(profile.use_id, "登録")
-        db.session.add(user)
-        db.session.commit()
+        session.add(user)
+        session.commit()
 
 """
 #フォロー時にRDBにデータを追加
