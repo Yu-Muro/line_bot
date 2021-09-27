@@ -77,10 +77,14 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = "何を削除しますか？"))
-    elif event.message.text == "呼び出し":
+    elif event.message.text == "登録":
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text = User.query.all()))
+            TextSendMessage(text="登録ありがとうございます！")
+        )
+        user = User(profile, "登録")
+        db.session.add(user)
+        db.session.commit()
 
 
 #フォロー時にRDBにデータを追加
