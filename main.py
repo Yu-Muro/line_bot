@@ -77,7 +77,7 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = "何を削除しますか？"))
-    elif event.message.text == "登録":
+    elif "登録" in event.message.text:
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text="登録ありがとうございます！")
