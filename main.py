@@ -15,16 +15,15 @@ YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
 
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
-profile = line_bot_api.get_profile("<user_id>") or "test"
 
-
+"""
 #PostgreSQLとの接続用
 db_uri = os.environ['DATABASE_URL']
 if db_uri.startswith("postgres://"):
     db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
-db = SQLAlchemy(app)
+db = SQLAlchemy(app)"""
 
 """
 class User(db.Model):
@@ -81,7 +80,7 @@ def handle_message(event):
     elif "登録" in event.message.text:
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="登録ありがとうございます！")
+            TextSendMessage(text="登録ありがとうございます！\n user_id = {}".format(event.source.user_id()))
         )
         """
         user = User(profile, "登録")
