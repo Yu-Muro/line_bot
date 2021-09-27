@@ -2,14 +2,15 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy_session import flask_scoped_session
 import os
 
 
 app = Flask(__name__)
+Base = declarative_base()
 
 #環境変数取得
 # LINE Developersで設定されているアクセストークンとChannel Secretをを取得し、設定します。
@@ -20,26 +21,27 @@ line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 
 
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user = Column(String(120))
+    status = Column(String(10))
+    def __init__(self, user, status):
+        self.user = user
+        self.status = status
+
+
 #PostgreSQLとの接続用
 db_uri = os.environ['DATABASE_URL']
 if db_uri.startswith("postgres://"):
     db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 engine = create_engine(db_uri)
-session_factory = sessionmaker(bind = engine)
+session_factory = sessionmaker(bind=engine)
 session = flask_scoped_session(session_factory, app)
 
-
-class User(db.Model):
-    __tablename__ = "users"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user = db.Column(db.String(120))
-    status = db.Column(db.String(10))
-    def __init__(self, user, status):
-        self.user = user
-        self.status = status
+Base.metadata.create_all(bind = engine)
 
 ## 1 ##
 #Webhookからのリクエストをチェックします。
