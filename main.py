@@ -29,8 +29,8 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user = db.Column(db.String())
-    status = db.Column(db.String())
+    user = db.Column(db.String(120))
+    status = db.Column(db.String(10))
     def __init__(self, user, status):
         self.user = user
         self.status = status
@@ -81,10 +81,10 @@ def handle_message(event):
     elif "登録" in event.message.text:
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="登録ありがとうございます！\n user_id = {}".format(profile.user_id[:5]))
+            TextSendMessage(text = "登録ありがとうございます！\n user_id = {}".format(profile.user_id[:5]))
         )
         
-        user = User(profile, "登録")
+        user = User(profile.use_id, "登録")
         db.session.add(user)
         db.session.commit()
 
