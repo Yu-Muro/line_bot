@@ -26,6 +26,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
 
+"""
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -34,7 +35,7 @@ class User(db.Model):
     def __init__(self, user, status):
         self.user = user
         self.status = status
-
+"""
 ## 1 ##
 #Webhookからのリクエストをチェックします。
 @app.route("/callback", methods=['POST'])
@@ -82,9 +83,10 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text="登録ありがとうございます！")
         )
+        """
         user = User(profile, "登録")
         db.session.add(user)
-        db.session.commit()
+        db.session.commit()"""
 
 
 #フォロー時にRDBにデータを追加
@@ -94,9 +96,10 @@ def handle_follow(event):
         event.reply_token,
         TextSendMessage(text = "登録ありがとうございます！")
     )
+    """
     user = User(profile, "登録")
     db.session.add(user)
-    db.session.commit()
+    db.session.commit()"""
 
 # ポート番号の設定
 if __name__ == "__main__":
