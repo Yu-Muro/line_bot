@@ -1,3 +1,4 @@
+import traceback
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -83,9 +84,17 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text = "何を削除しますか？"))
     elif "登録" in event.message.text:
-        user_data = User(user_name=profile.use_id, status="登録")
-        session.add(user_data)
-        session.commit()
+        try:
+            user_data = User(user_name=profile.use_id, status="登録")
+            session.add(user_data)
+            session.commit()
+        except:
+            t = traceback.format_exc()
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(
+                    text = t)
+            )
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = "登録ありがとうございます！\n user_id = {}".format(profile.user_id[:5]))
