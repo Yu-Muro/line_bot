@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, FollowEvent
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -15,10 +15,8 @@ YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
 
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
-try:
-    profile = line_bot_api.get_profile("<user_id>")
-except:
-    profile = "blocked_user"
+profile = line_bot_api.get_profile("<user_id>") or "test"
+
 
 #PostgreSQLとの接続用
 db_uri = os.environ['DATABASE_URL']
@@ -72,12 +70,10 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     if "追加" in event.message.text:
-        status = "追加"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = "何を追加しますか？"))
     elif "削除" in event.message.text:
-        status = "削除"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = "何を削除しますか？"))
@@ -85,6 +81,18 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text = User.query.all()))
+
+
+#フォロー時にRDBにデータを追加
+@handler.add(FollowEvent)
+def handle_follow(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text = "登録ありがとうございます！")
+    )
+    user = User(profile, "登録")
+    db.session.add(user)
+    db.session.commit()
 
 # ポート番号の設定
 if __name__ == "__main__":
