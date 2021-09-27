@@ -5,7 +5,6 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from flask_sqlalchemy_session import flask_scoped_session
 import os
 
 
@@ -39,7 +38,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 engine = create_engine(db_uri)
 session_factory = sessionmaker(bind=engine)
-session = flask_scoped_session(session_factory, app)
+session = session_factory()
 
 Base.metadata.create_all(bind = engine)
 
