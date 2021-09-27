@@ -69,6 +69,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    profile = line_bot_api.get_profile(event.source.user_id)
     if "追加" in event.message.text:
         line_bot_api.reply_message(
             event.reply_token,
@@ -80,7 +81,7 @@ def handle_message(event):
     elif "登録" in event.message.text:
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="登録ありがとうございます！\n user_id = {}".format(event.source.user_id()))
+            TextSendMessage(text="登録ありがとうございます！\n user_id = {}".format(profile.user_id[:5]))
         )
         """
         user = User(profile, "登録")
