@@ -85,7 +85,7 @@ def handle_message(event):
             TextSendMessage(text = "何を削除しますか？"))
     elif "登録" in event.message.text:
         try:
-            user_data = User(user_name=profile.use_id, status="登録")
+            user_data = User(user_name=profile.user_id, status="登録")
             session.add(user_data)
             session.commit()
         except:
